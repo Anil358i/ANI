@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NestMate AI - London</title>
+  <link rel="stylesheet" href="src/style.css">
+  <script type="module" src="src/app.js"></script>
+  <script src="https://upload-widget.cloudinary.com/global/all.js"></script>
+</head>
+<body>
+
+  <div id="auth-overlay">
+    <p>Connecting...</p>
+  </div>
+
+  <div id="videoModal" class="video-modal-backdrop" onclick="closeVideoModal(event)">
+    <div class="video-modal-card">
+      <button class="video-close-btn" onclick="closeVideoModal()">&#x2715;</button>
+      <div class="video-container">
+        <video id="nestVideo" src="https://res.cloudinary.com/dhmsg8euy/video/upload/v1776991469/YTDown.com_YouTube_LONDON-Cinematic-Travel-Video-Sony-A-7-I_Media_MR79R-Yj884_001_1080p_fav8ns.mp4" preload="metadata"></video>
+        <div class="video-controls">
+          <button class="ctrl-btn" onclick="togglePlay()" id="playBtn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path id="playIcon" d="M8 5v14l11-7z"/></svg>
+          </button>
+          <input type="range" id="progressBar" class="progress-bar" value="0" min="0" step="0.1">
+          <div class="volume-group">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+            <input type="range" id="volumeBar" class="volume-bar" value="100" min="0" max="100">
+          </div>
+          <button class="ctrl-btn" onclick="toggleFullscreen()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="myListingsModal" class="popup-backdrop listings-modal-z" onclick="closeMyListings()">
+    <div class="popup-card extended-card max-w-listings" onclick="event.stopPropagation()">
+      <span class="close-x" onclick="closeMyListings()">&times;</span>
+      
+      <div class="sf-modal-hero">
+        <h1>My Listings</h1>
+        <p>Publish and manage your active properties</p>
+      </div>
+
+      <div class="popup-scroll-container">
+        <div class="sf-form-card listing-form-bg">
+          <div class="sf-section-label form-title-color">Add New Listing</div>
+          
+          <div class="sf-input-wrapper">
+            <input type="text" id="modalPropName" class="sf-input-field" placeholder=" ">
+            <label class="sf-floating-label">Property Name</label>
+          </div>
+          <div class="sf-input-wrapper">
+            <input type="number" id="modalPropPrice" class="sf-input-field" placeholder=" ">
+            <label class="sf-floating-label">Weekly Rent (£)</label>
+          </div>
+          <div class="sf-input-wrapper">
+            <input type="tel" id="modalPropPhone" class="sf-input-field" placeholder=" ">
+            <label class="sf-floating-label">Your Phone Number</label>
+          </div>
+          <div class="sf-input-wrapper">
+            <input type="text" id="modalPropAddress" class="sf-input-field" placeholder=" ">
+            <label class="sf-floating-label">Property Address (e.g. 12 Baker St, London)</label>
+          </div>
+          
+          <button onclick="modalUploadProperty()" class="apple-btn-black btn-margin">Publish Space</button>
+          <p id="modalUploadStatus"></p>
+        </div>
+
+        <div id="myListingsGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="propertyDetailModal" class="popup-backdrop detail-modal-z" onclick="closePropertyDetail()">
+    <div class="popup-card extended-card detail-card-layout" onclick="event.stopPropagation()">
+      <button onclick="closePropertyDetail()" class="video-close-btn detail-close-pos">✕</button>
+      
+      <div class="detail-hero-image-wrap">
+        <img id="detailImage" src="">
+      </div>
+      
+      <div class="detail-content-padding">
+        <h2 id="detailName"></h2>
+        <div id="detailPrice"></div>
+        
+        <div class="sf-section-label heading-margin">Host Contact</div>
+        <div class="detail-contact-wrapper">
+          <div class="detail-info-row">
+            <span class="emoji-icon">📞</span>
+            <div>
+              <p class="info-label">Phone</p>
+              <p id="detailPhone" class="info-value"></p>
+            </div>
+          </div>
+          <div class="detail-info-row">
+            <span class="emoji-icon">✉️</span>
+            <div>
+              <p class="info-label">Email</p>
+              <p id="detailEmail" class="info-value"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="sf-section-label heading-margin">Location</div>
+        <div class="detail-info-row location-margin">
+          <span class="emoji-icon">📍</span>
+          <div>
+            <p class="info-label">Address</p>
+            <p id="detailAddress" class="info-value"></p>
+          </div>
+        </div>
+
+        <a id="detailMapLink" href="" target="_blank" class="maps-link-btn">
+          🗺️ Open in Google Maps
+        </a>
+
+        <button onclick="bookNow()" class="sf-action-btn detail-book-btn">Book Now</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-shell">
+    <header class="site-header">
+      <div class="nav-inner">
+        <div class="logo">NestMate AI</div>
+        <nav class="nav-links">
+          <a href="#explore">Explore</a>
+          <a href="#demo">AI Chat</a>
+        </nav>
+        <div class="mobile-menu-btn" onclick="toggleMobileMenu()">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="user-menu-container">
+          <div class="profile-trigger"><span>A</span></div>
+          <div id="userDropdown" class="user-dropdown">
+            <div class="dropdown-item listings-trigger-color" onclick="myListings()">My Listings</div>
+            <div class="dropdown-item logout-btn" onclick="handleLogout()">Logout</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero-section fade-in">
+        <h1 class="hero-title">Live in London <span>for almost free.</span></h1>
+        <p class="hero-copy">Rent a 3-bed house, fill spare rooms, and save up to £1,800.</p>
+      </section>
+
+      <section class="video-banner-section fade-in">
+        <h2 class="video-banner-heading">Find your perfect space.</h2>
+        <div class="video-banner-card" onclick="openVideoModal()">
+          <img src="https://res.cloudinary.com/dhmsg8euy/image/upload/v1776990329/pexels-vincent-wei-64074344-8332179_uhd8c0.jpg" alt="NestMate London" class="video-banner-img">
+          <div class="video-banner-overlay">
+            <div class="video-play-hint">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+              Watch the tour
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="explore-section fade-in" id="explore">
+        <h2>Available Listings</h2>
+        <div class="toggle-group">
+          <button class="toggle-btn active" onclick="setDuration('day', this)">Day</button>
+          <button class="toggle-btn" onclick="setDuration('week', this)">Week</button>
+          <button class="toggle-btn" onclick="setDuration('month', this)">Month</button>
+        </div>
+        <div class="carousel-outer"><div id="carouselTrack" class="carousel-track"></div></div>
+      </section>
+
+      <section class="demo-section fade-in" id="demo">
+        <div class="chat-wrapper">
+          <div class="chat-messages" id="chatBox"></div>
+          <div class="chat-input-area">
+            <input type="text" id="userInput" placeholder="Ask NestMate AI..." onkeydown="if(event.key==='Enter') sendMsg()">
+            <button onclick="sendMsg()" class="send-btn">Send</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="src/responses.js"></script>
+  <script src="src/chat.js"></script>
+</body>
+</html>
